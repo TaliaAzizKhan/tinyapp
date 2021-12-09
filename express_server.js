@@ -1,19 +1,29 @@
-
 const express = require("express");
+// var cookieParser = require('cookie-parser')
 const app = express();
+// app.use(cookieParser())
+
+// app.get('/', function (req, res) {
+//   // Cookies that have not been signed
+//   console.log('Cookies: ', req.cookies)
+
+//   // Cookies that have been signed
+//   console.log('Signed Cookies: ', req.signedCookies)
+// })
+
 const PORT = 3000; // default port 8080
 
 app.set("view engine", "ejs");
+
+
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
-
 
 function generateRandomString() {
   return Math.random().toString(36).slice(7);
@@ -81,8 +91,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.editUrl;
-  // delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+    res.redirect("/urls");
 });
 
 
