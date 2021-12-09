@@ -56,8 +56,9 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
 
-  let longURL = urlDatabase[req.params.shortURL].longURL;
-  const templateVars = { shortURL: req.params.shortURL, longURL: href=urlDatabase[req.params.shortURL].longURL/* What goes here? */ };
+  let longURL = urlDatabase[req.params.shortURL];
+  console.log(longURL)
+  const templateVars = { shortURL: req.params.shortURL, longURL: href=urlDatabase[req.params.shortURL]/* What goes here? */ };
   res.render("urls_show", templateVars);
   
 });
@@ -66,18 +67,17 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
 
   let randomShortUrl = generateRandomString();
-
   urlDatabase[randomShortUrl] = req.body.longURL;
-  res.redirect(req.body.longURL);
-
-  res.redirect(`/urls/${shortURL}`);
-
-  console.log(urlDatabase);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${randomShortUrl}`);
+  // console.log(urlDatabase);  // Log the POST request body to the console
+  // res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 
-
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
 
 
 
@@ -88,181 +88,3 @@ app.post("/urls", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//BU
-// const PORT = 8080; // default port 8080
-// const express = require("express");
-
-// // body parser
-// const bodyParser = require("body-parser");
-
-// const app = express();
-// app.set("view engine", "ejs");
-
-// // database
-
-// const urlDatabase = {
-//   "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID:"userRandomID"},
-//   "9sm5xK": {longURL:"http://www.google.com", userID:"user2RandomID"}
-// };
-
-// //middleware
-// app.use(bodyParser.urlencoded({extended: true}));
-
-
-
-// // Browse
-
-// app.get("/", (req, res) => {
-//   res.send("Hello!");
-// });
-
-
-// app.get("/urls", (req, res) => {
-//   const templateVars = { urls: urlDatabase };
-//   res.render("urls_index", templateVars);
-// });
-
-// // Read
-
-// app.get("/u/:shortURL", (req, res) => {
-//   const longURL = urlDatabase[req.params.shortURL].longURL;
-//   res.redirect(longURL);
-// });
-
-
-
-// // new urls
-
-// app.get("/urls/new", (req, res) => {
-//   res.render("urls_new");
-// });
-
-
-// // show tiny url
-
-// app.get("/urls/:shortURL", (req, res) => {
-//   // const templateVars = { shortURL: req.params.shortURL, longURL: /* What goes here? */ };
-//   const templateVars = { shortURL: req.params.shortURL, longURL: "http://www.lighthouselabs.ca" , };
-//   res.render("urls_show", templateVars);
-// });
-
-
-// // post 
-// // generate new id and store registration informations
-
-
-
-
-
-
-
-// // generate random short url 
-
-// app.post("/urls", (req, res) => {
-
-//   console.log(req.body);  // Log the POST request body to the console
-//   res.send("Ok");         // Respond with 'Ok' (we will replace this)
-// });
-
-
-
-
-
-
-// // app.get("/urls.json", (req, res) => {
-// //   res.json(urlDatabase);
-// // });
-
-
-// // app.get("/hello", (req, res) => {
-// //   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// // });
-
-
-
-
-
-
-
-// // have the web server listen on port
-
-// app.listen(PORT, () => {
-//   console.log(`Example app listening on port ${PORT}!`);
-// });
-
