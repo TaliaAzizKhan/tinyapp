@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 
 function generateRandomString() {
   return Math.random().toString(36).slice(7);
-};
+}
 
 
 //==============================================================================================================================
@@ -55,7 +55,7 @@ const ReturnUserId = function(userDatabase, email) {
 
 //function to return URLs if UserId is same as of the user currently logged in.
 
-const UserUrls = function(urlDatabase, userID) {
+const urlsForUser = function(urlDatabase, userID) {
   let userSpecificURLS = {};
 
   for (let key in urlDatabase) {
@@ -66,6 +66,15 @@ const UserUrls = function(urlDatabase, userID) {
   return userSpecificURLS;
 };
 
+const getUserByEmail = function(email, userDatabase) {
+  for (let user in userDatabase) {
+    if (userDatabase[user].email === email) {
+      return user;
+    }
+  }
+};
+
 //==============================================================================================================================
 
-module.exports = {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, UserUrls};
+module.exports = {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, urlsForUser, getUserByEmail};
+

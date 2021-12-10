@@ -2,7 +2,7 @@
 const { assert } = require('chai');
 const bcrypt = require('bcrypt');
 const salt = 10;
-const {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, UserUrls} = require('../helpers.js');
+const {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, urlsForUser, getUserByEmail} = require('../helpers.js');
 
 //=============================================================================================================================
 
@@ -84,7 +84,7 @@ describe('ReturnUserId', function() {
 
 //=============================================================================================================================
 
-describe('UserUrls', function() {
+describe('urlsForUser', function() {
   it('should return filtered object of current users personally created urls', function() {
 
     const testUrlDatabase = {
@@ -92,7 +92,7 @@ describe('UserUrls', function() {
       "9sm5xK": {longURL:"http://www.google.ca", userID:"user2RandomID"}
     };
 
-    const userURLList = UserUrls(testUrlDatabase, "userRandomID");
+    const userURLList = urlsForUser(testUrlDatabase, "userRandomID");
     const expectedOutput = {"b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID:"userRandomID"}};
 
     assert.deepEqual(userURLList, expectedOutput);
@@ -105,11 +105,29 @@ describe('UserUrls', function() {
       "9sm5xK": {longURL:"http://www.google.ca", userID:"user2RandomID"}
     };
 
-    const userURLList = UserUrls(testUrlDatabase, "user3RandomID");
+    const userURLList = urlsForUser(testUrlDatabase, "user3RandomID");
     const expectedOutput = {};
 
     assert.deepEqual(userURLList, expectedOutput);
   });
+});
+
+//=============================================================================================================================
+
+describe('getUserByEmail', function() {
+  it('should return a user with valid email', function() {
+    const user = getUserByEmail("user@example.com", testUsers);
+    const expectedOutput = "userRandomID";
+    assert.deepEqual(user, expectedOutput);
+  });
+
+  it('should return undefined if non-existent email in user database', function() {
+
+    const user = getUserByEmail("emlovescookies@cookiemonster.com", testUsers);
+    const expectedOutput = undefined;
+    assert.deepEqual(user, expectedOutput);
+  });
+
 });
 
 //=============================================================================================================================

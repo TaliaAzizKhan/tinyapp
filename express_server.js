@@ -1,6 +1,6 @@
 
 const express = require("express");
-const {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, UserUrls} = require('./helpers');
+const {generateRandomString, AlreadyExistingUser, AuthenticateUser, ReturnUserId, urlsForUser, getUserByEmail} = require('./helpers');
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const methodOverride = require('method-override');
@@ -61,7 +61,7 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   let currentUser = users[req.session["user_id"]];
   if (currentUser) {
-    let userSpecificURLs = UserUrls(urlDatabase, currentUser["id"]);
+    let userSpecificURLs = urlsForUser(urlDatabase, currentUser["id"]);
     const templateVars = {
       user: currentUser,
       urls: userSpecificURLs
@@ -69,7 +69,7 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
   } else {
     const templateVars = {
-      user: false 
+      user: false
     };
     res.render("urls_index", templateVars);
   }
@@ -96,7 +96,7 @@ app.get("/register", (req, res) => {
   let currentUser = users[req.session["user_id"]];
   const templateVars = {
     user: currentUser,
-    error: null 
+    error: null
   };
   res.render("register", templateVars);
 });
@@ -107,7 +107,7 @@ app.get("/login", (req, res) => {
   let currentUser = users[req.session["user_id"]];
   const templateVars = {
     user: currentUser,
-    error: null 
+    error: null
   };
 
   res.render("login", templateVars);
@@ -121,10 +121,10 @@ app.get("/urls/:shortURL", (req, res) => {
   let display;
   
   if (currentUser) {
-    if (UserUrls(urlDatabase, currentUser.id)[req.params.shortURL]) {
-      display = true; 
+    if (urlsForUser(urlDatabase, currentUser.id)[req.params.shortURL]) {
+      display = true;
     } else {
-      display = false; 
+      display = false;
     }
     
     if (longURL) {
@@ -169,7 +169,7 @@ app.delete("/urls/:shortURL", (req, res) => {
   let currentUser = users[req.session["user_id"]];
   
   if (currentUser) {
-    if (UserUrls(urlDatabase, currentUser.id)[req.params.shortURL]) {
+    if (urlsForUser(urlDatabase, currentUser.id)[req.params.shortURL]) {
       delete urlDatabase[req.params.shortURL];
       res.redirect("/urls");
     }
@@ -188,7 +188,7 @@ app.put("/urls/:shortURL", (req, res) => {
   let currentUser = users[req.session["user_id"]];
 
   
-  if (UserUrls(urlDatabase, currentUser.id)[req.params.shortURL]) {
+  if (urlsForUser(urlDatabase, currentUser.id)[req.params.shortURL]) {
     let newURL = req.body.newURL;
 
     //update new URL to Database
@@ -257,7 +257,7 @@ app.post("/register", (req, res) => {
     //Add new user to Database
     users[newId] = newUser;
     //add encrypted cookies
-    req.session['user_id'] = newId; 
+    req.session['user_id'] = newId;
     res.redirect("/urls");
   }
 });
