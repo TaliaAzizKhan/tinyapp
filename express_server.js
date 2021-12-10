@@ -102,11 +102,23 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+app.get("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+    res.redirect("/urls");
+});
+
 
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
     res.redirect("/urls");
 });
+
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+    res.redirect("/urls");
+});
+
 
 
 
